@@ -44,10 +44,12 @@ export const handleLogin = async (req, res) => {
 
     const accessToken = generateToken(user);
     const refreshToken = generateRefreshToken(user);
-    console.log(refreshToken)
+    console.log(refreshToken);
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -77,4 +79,3 @@ export const getLoggedInUser = async (req, res) => {
     res.status(401).json({ success: false, message: "Unauthorized" });
   }
 };
-
