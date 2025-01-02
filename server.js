@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "https://dreyxinx.vercel.app/",
   credentials: true,
 }))
 const PORT = process.env.PORT || 2007;
