@@ -10,6 +10,7 @@ const generateToken = (user) => {
 
 export const handleRefreshToken = (req, res) => {
     const refreshToken = req.cookies.refreshToken;
+    console.log(refreshToken);
 
     if (!refreshToken) {
         return res.status(401).json({ success: false, message: "Unauthorized" });

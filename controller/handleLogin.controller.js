@@ -44,6 +44,7 @@ export const handleLogin = async (req, res) => {
 
     const accessToken = generateToken(user);
     const refreshToken = generateRefreshToken(user);
+    console.log(refreshToken)
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
