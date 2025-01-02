@@ -11,14 +11,27 @@ import authorRoutes from './routes/authorRoutes.js'
 
 configDotenv();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://dreyxinx.vercel.app",
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}
+
 const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors({
-  origin: "https://dreyxinx.vercel.app",
-  credentials: true,
-}))
+app.use(cors(corsOptions));
 const PORT = process.env.PORT || 2007;
 
 app.use("/api/story", storyRoutes);
