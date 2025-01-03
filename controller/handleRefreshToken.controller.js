@@ -9,7 +9,8 @@ const generateToken = (user) => {
 
 
 export const handleRefreshToken = (req, res) => {
-    const refreshToken = req.cookies.refreshToken;
+    // const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.headers?.authorization.split(" ")[1];
     console.log(refreshToken);
 
     if (!refreshToken) {
