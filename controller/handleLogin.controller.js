@@ -53,7 +53,7 @@ export const handleLogin = async (req, res) => {
 
     res
       .status(200)
-      .json({ success: true, message: "User logged in", accessToken });
+      .json({ success: true, message: "User logged in", refreshToken });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
