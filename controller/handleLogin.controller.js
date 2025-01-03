@@ -48,7 +48,7 @@ export const handleLogin = async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      domain: "https://dreyxink-server.onrender.com",
+      domain: ".dreyxink-server.onrender.com",
       secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000,
     });
