@@ -55,6 +55,16 @@ export const updateUser = async (req, res) => {
 
   try {
     // Check if the username is being updated and if it already exists
+    if (!updates.username) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Please provide username" });
+    }
+    if (!updates.email) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Please provide email" });
+    }
     if (updates.username) {
       const existingUsername = await User.findOne({
         username: updates.username,
@@ -163,7 +173,7 @@ export const uploadProfilePicture = async (req, res) => {
 
 export const toggleBookmark = async (req, res) => {
   const { id } = req.params;
-  const { story_id,userId } = req.body;
+  const { story_id, userId } = req.body;
 
   try {
     const user = await User.findById(id);
@@ -193,7 +203,6 @@ export const toggleBookmark = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
 
 export const getBookmarks = async (req, res) => {
   const { id } = req.params;
