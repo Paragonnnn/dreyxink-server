@@ -6,6 +6,12 @@ import {
   updateUser,
   deleteUser,
   getUser,
+  checkIfEmailExist,
+  checkIfUsernameExist,
+  uploadProfilePicture,
+  upload,
+  getBookmarks,
+  toggleBookmark,
 } from "../controller/user.controller.js";
 import { handleSignup } from "../controller/handleSignup.controller.js";
 import {
@@ -27,6 +33,16 @@ router.post("/add-user", addUser);
 router.post("/signup", handleSignup);
 router.post("/login", handleLogin);
 router.put("/update-user/:id", updateUser);
+router.get("/username-exists/:username", checkIfUsernameExist);
+router.get("/email-exists/:email", checkIfEmailExist);
 router.delete("/delete-user/:id", deleteUser);
+router.post(
+  "/upload-profile-picture",
+  upload.single("image"),
+  uploadProfilePicture
+);
+router.post('/toggle-bookmark/:id', toggleBookmark)
+router.get('/get-bookmarks/:id', getBookmarks)
+
 
 export default router;
