@@ -55,10 +55,22 @@ const LikeSchema = new Schema({
   },
 });
 
-const categorySchema = new Schema({
-  name: { type: String, required: true },
-  description: { type: String },
-});
+
+const ChapterSchema = new Schema(
+  {
+    title: { type: String, required: true },
+    content: {type: Object, required: true},
+    chhapter_number: { type: Number, required: true },
+    likes: [LikeSchema],
+    likes_count: { type: Number, default: 0 },
+    comments: [commentSchema],
+  },
+  {
+    timestamps: true,
+  }
+);
+
+
 
 const storySchema = new Schema(
   {
@@ -72,10 +84,10 @@ const storySchema = new Schema(
     //   ref: "Category",
     //   required: true,
     // },
-    category: [categorySchema],
-    title: { type: String, required: true, unique: true },
-    content: { type: String, required: true },
-    summary: { type: String },
+    categories: [{ type: String, required: true }],
+    title: { type: String, required: true},
+    chapters: [ChapterSchema],
+    summary: { type: String, required: true},
     cover_image: { type: String },
     comments: [commentSchema],
     likes: [LikeSchema],

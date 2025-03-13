@@ -1,6 +1,14 @@
 import Story from "../models/story.model.js";
 import Comment from "../models/comment.model.js";
 import mongoose from "mongoose";
+import { configDotenv } from "dotenv";
+
+import { v2 as cloudinary } from "cloudinary";
+import multer from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import path from "path";
+
+configDotenv();
 
 export const getStories = async (req, res) => {
   const page = req.query.page || 1;
@@ -37,11 +45,12 @@ export const getStories = async (req, res) => {
 export const addStory = async (req, res) => {
   const body = req.body;
 
-  const story = new Story(body);
-
   try {
+    const story = new Story(body);
     const newStory = await story.save();
-    res.status(201).json({ success: true, data: newStory });
+    res
+      .status(201)
+      .json({ success: true, data: newStory, message: "Story added" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -57,6 +66,21 @@ export const getStory = async (req, res) => {
         .json({ success: false, message: "Story not found" });
     }
     res.status(200).json({ success: true, data: story });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getStoriesByAuthor = async (req, res) => {
+  const { author_id } = req.params;
+  try {
+    const stories = await Story.find({ author_id });
+    if (!stories) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Stories not found" });
+    }
+    res.status(200).json({ success: true, data: stories });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -93,7 +117,6 @@ export const deleteStory = async (req, res) => {
   }
 };
 
-
 export const addComment = async (req, res) => {
   const { id } = req.params;
   const comment = req.body;
@@ -110,7 +133,6 @@ export const addComment = async (req, res) => {
   try {
     const story = await Story.findById(id);
     story.comments.push(comment);
-
     // Comment.push(comment)
     story.comments_count = story.comments.length;
     await story.save();
@@ -231,3 +253,37 @@ export const replyComment = async (req, res) => {
   }
 };
 
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+  secure: true,
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: (req, file) => {
+    const fileName = `${
+      path.parse(file.originalname).name
+    }${new Date().getTime()}`;
+    return {
+      folder: "stories",
+      allowedFormats: ["jpg", "png"],
+      transformation: [{ height: 256 }],
+      public_id: fileName,
+    };
+  },
+});
+
+export const upload = multer({ storage: storage });
+
+export const uploadCoverImage = async (req, res) => {
+  const file = req.file;
+  console.log(file);
+  try {
+    res.json({ url: file.path });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
